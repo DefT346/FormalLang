@@ -1,0 +1,68 @@
+S = AB | CD
+A = EF
+G = AD
+C = c
+
+S = AS | BS | s
+E = EF | FF
+A = a
+F = f
+
+**
+S = AB | a
+A = b
+
+mijk^~$
+RTFGK
+
+R=R~T$ | R^T$ | ε
+T=F | Fi | Fj | Gk | ε
+G=GkG
+K=Ki | Km | m
+
+R=R~T$ | R^T$
+T=F | FGi | Fj | Gk
+G=GkG | Kk
+K=Ki | Km | m
+
+Тест удаления ε правил
+
+R = R~T$ 
+R = R^T$
+R =  ε
+T = F
+T = Fi
+T = Fj
+T = Gk
+T =  ε
+G = GkG
+K = Ki
+K = Km
+K = m
+
+Шаг 1
+R, T
+
+Шаг 2
+R = R~T$ 
+R = R^T$
+T = F
+T = Fi
+T = Fj
+T = Gk
+G = GkG
+K = Ki
+K = Km
+K = m
+
+Шаг 3
+R = R~T$ 
+R = R^T$
+T = F
+T = Fi
+T = Fj
+T = Gk
+G = GkG
+K = Ki
+K = Km
+K = m
