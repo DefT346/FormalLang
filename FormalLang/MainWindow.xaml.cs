@@ -15,7 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-namespace GTypeDetect
+namespace FormalLang
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GTypeDetect {
+namespace FormalLang {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
