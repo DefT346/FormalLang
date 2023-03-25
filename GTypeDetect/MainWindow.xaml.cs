@@ -135,20 +135,70 @@ namespace GTypeDetect
                 return false;
         }
 
-        bool reg = false;
-        bool cf = false;
-        bool cs = false;
+        //bool reg = false;
+        //bool cf = false;
+        //bool cs = false;
 
-        private void Reset()
-        {
-            reg = false;
-            cf = false;
-            cs = false;
-        }
+        //private void Reset()
+        //{
+        //    reg = false;
+        //    cf = false;
+        //    cs = false;
+        //}
 
-        private int GetResult()
+        //private int GetResult()
+        //{
+        //    int res = 3;
+        //    if (reg)
+        //    {
+        //        resultBox.Text = "регулярная";
+        //        res = 3;
+        //    }
+        //    else if (cf)
+        //    {
+        //        resultBox.Text = "контекстно свободная";
+        //        res = 2;
+        //    }
+        //    else if (cs)
+        //    {
+        //        resultBox.Text = "контекстно зависимая";
+        //        res = 1;
+        //    }
+        //    else
+        //    {
+        //        resultBox.Text = "типа ноль";
+        //        res = 0;
+        //    }
+
+        //    return res;
+        //}
+
+        // Функция определения типа грамматики с вводом конкретного правила
+        // Данная функция изменяет глобальные переменные программы, определяющие тип.
+        // Чтобы получить тип введённой грамматики, требуется использовать метод GetResult()
+        // Функция Reset() обнуляет глобальные переменные
+        //private void DetectType(string alpha, string beta)
+        //{
+        //    reg = reg || isRegular(alpha, beta); // 3
+        //    cf = cf || isContextFree(alpha); // 2
+        //    cs = cs || isContextSensitive(alpha, beta); // 1
+        //}
+
+        // Функция определения типа грамматики с вводом всех правил сразу
+        private int DetectType(List<(string L, string R)> rules)
         {
-            int res = 3;
+            bool reg = false;
+            bool cf = false;
+            bool cs = false;
+
+            foreach (var rule in rules)
+            {
+                reg = reg || isRegular(rule.L, rule.R); // 3
+                cf = cf || isContextFree(rule.L); // 2
+                cs = cs || isContextSensitive(rule.L, rule.R); // 1
+            }
+
+            int res;
             if (reg)
             {
                 resultBox.Text = "регулярная";
@@ -173,21 +223,7 @@ namespace GTypeDetect
             return res;
         }
 
-        private void DetectType(string alpha, string beta)
-        {
-            reg = reg || isRegular(alpha, beta); // 3
-            cf = cf || isContextFree(alpha); // 2
-            cs = cs || isContextSensitive(alpha, beta); // 1
-        }
-
-        private void DetectType(List<(string L, string R)> rules)
-        {
-            foreach(var rule in rules)
-            {
-                DetectType(rule.L, rule.R);
-            }
-        }
-
+        // Функция проверки заданной левой части и правой на 3 тип (Регулярные грамматики)
         private bool isRegular(string alpha, string beta)
         {
             if (CountNonTerminals(alpha) == 1 && CountTerminals(alpha) == 0)
@@ -208,6 +244,7 @@ namespace GTypeDetect
             return false;
         }
 
+        // Функция проверки заданной левой части на 2 тип (Контекстно свободные)
         private bool isContextFree(string alpha)
         {
             if (CountNonTerminals(alpha) == 1 && CountTerminals(alpha) == 0)
@@ -217,6 +254,7 @@ namespace GTypeDetect
             return false;
         }
 
+        // Функция проверки заданной левой части и правой на 2 тип (Контекстно зависимые грамматики)
         private bool isContextSensitive(string alpha, string beta)
         {
             if (CountNonTerminals(alpha) == 1)
@@ -318,7 +356,7 @@ namespace GTypeDetect
 
                 updatableRules.Clear();
 
-                Reset();
+                //Reset();
                 var rulesText = rulesInput.Text;
 
 
@@ -357,9 +395,9 @@ namespace GTypeDetect
 
                 if (!ValidGrammatic(rulesText)) throw new Exception("ошибка, проверьте символы");
 
-                DetectType(updatableRules);
+                var type = DetectType(updatableRules);
 
-                var type = GetResult();
+                //var type = GetResult();
 
                 if (type == 2 || type == 3)
                 {
