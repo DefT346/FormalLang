@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace GTypeDetect
+namespace FormalLang
 {
     /// <summary>
     /// Interaction logic for App.xaml

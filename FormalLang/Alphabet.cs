@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GTypeDetect
+namespace FormalLang
 {
     internal static class Alphabet
     {
