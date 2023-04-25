@@ -45,235 +45,6 @@ namespace FormalLang
             DragMove();
         }
 
-        //private void Button_Click(object sender, RoutedEventArgs e)
-        //{
-        //    rules.Items.Add("");
-        //}
-
-        //private void Button_Click_1(object sender, RoutedEventArgs e)
-        //{
-        //    if (rules.Items.Count > 0)
-        //        rules.Items.RemoveAt(rules.Items.Count - 1);
-        //}
-
-        char GetStartNonTerminal()
-        {
-            return startNInput.Text[0];
-        }
-
-        const char eps = 'ε';
-
-        // символы и буковки
-        string GetTerminals()
-        {
-            return terminalsInput.Text + eps;
-        }
-
-        string GetNonTerminals()
-        {
-            //S=ccAd
-            //A=ccd | E
-            return notterminalsInput.Text;
-        }
-
-        private int CountTerminals(string chainElement)
-        {
-            var terminals = GetTerminals();
-            int count = 0;
-            foreach(var el in chainElement)
-            {
-                if (terminals.Contains(el)) count++;
-            }
-            return count;
-        }
-
-        private SortedSet<char> SelectNonTerminals(string R)
-        {
-            var N = new SortedSet<char>();
-            var nonTerminals = GetNonTerminals();
-            foreach (var symbol in R)
-            {
-                if (nonTerminals.Contains(symbol)) N.Add(symbol);
-            }
-            return N;
-        }
-
-        private int CountNonTerminals(string chainElement)
-        {
-            var nonTerminals = GetNonTerminals();
-            int count = 0;
-            foreach (var el in chainElement)
-            {
-                if (nonTerminals.Contains(el)) count++;
-            }
-            return count;
-        }
-
-        private int FindNonTerminal(string chainElement)
-        {
-            var nonTerminals = GetNonTerminals();
-            for(int i =0; i < chainElement.Length; i++)
-            {
-                if (nonTerminals.Contains(chainElement[i])) return i;
-            }
-            return -1;
-        }
-
-        public bool isTerminal(char symb)
-        {
-            var terminals = GetTerminals();
-            if (terminals.Contains(symb)) return true;
-            else
-                return false;
-        }
-
-        public bool isNonTerminal(char symb)
-        {
-            var nonTerminals = GetNonTerminals();
-            if (nonTerminals.Contains(symb)) return true;
-            else
-                return false;
-        }
-
-        //bool reg = false;
-        //bool cf = false;
-        //bool cs = false;
-
-        //private void Reset()
-        //{
-        //    reg = false;
-        //    cf = false;
-        //    cs = false;
-        //}
-
-        //private int GetResult()
-        //{
-        //    int res = 3;
-        //    if (reg)
-        //    {
-        //        resultBox.Text = "регулярная";
-        //        res = 3;
-        //    }
-        //    else if (cf)
-        //    {
-        //        resultBox.Text = "контекстно свободная";
-        //        res = 2;
-        //    }
-        //    else if (cs)
-        //    {
-        //        resultBox.Text = "контекстно зависимая";
-        //        res = 1;
-        //    }
-        //    else
-        //    {
-        //        resultBox.Text = "типа ноль";
-        //        res = 0;
-        //    }
-
-        //    return res;
-        //}
-
-        // Функция определения типа грамматики с вводом конкретного правила
-        // Данная функция изменяет глобальные переменные программы, определяющие тип.
-        // Чтобы получить тип введённой грамматики, требуется использовать метод GetResult()
-        // Функция Reset() обнуляет глобальные переменные
-        //private void DetectType(string alpha, string beta)
-        //{
-        //    reg = reg || isRegular(alpha, beta); // 3
-        //    cf = cf || isContextFree(alpha); // 2
-        //    cs = cs || isContextSensitive(alpha, beta); // 1
-        //}
-
-        // Функция определения типа грамматики с вводом всех правил сразу
-        private int DetectType(List<(string L, string R)> rules)
-        {
-            bool reg = false;
-            bool cf = false;
-            bool cs = false;
-
-            foreach (var rule in rules)
-            {
-                reg = reg || isRegular(rule.L, rule.R); // 3
-                cf = cf || isContextFree(rule.L); // 2
-                cs = cs || isContextSensitive(rule.L, rule.R); // 1
-            }
-
-            int res;
-            if (reg)
-            {
-                resultBox.Text = "регулярная";
-                res = 3;
-            }
-            else if (cf)
-            {
-                resultBox.Text = "контекстно свободная";
-                res = 2;
-            }
-            else if (cs)
-            {
-                resultBox.Text = "контекстно зависимая";
-                res = 1;
-            }
-            else
-            {
-                resultBox.Text = "типа ноль";
-                res = 0;
-            }
-
-            return res;
-        }
-
-        // Функция проверки заданной левой части и правой на 3 тип (Регулярные грамматики)
-        private bool isRegular(string alpha, string beta)
-        {
-            if (CountNonTerminals(alpha) == 1 && CountTerminals(alpha) == 0)
-            {
-                //foreach (var b in beta) {
-                    if (CountNonTerminals(beta) == 1)
-                    {
-                        var index = FindNonTerminal(beta);
-                        if (index == beta.Length - 1 || index == 0) return true;
-                        else return false;
-                    }
-                    else
-                    {
-                        return true;
-                    }
-                //}
-            }
-            return false;
-        }
-
-        // Функция проверки заданной левой части на 2 тип (Контекстно свободные)
-        private bool isContextFree(string alpha)
-        {
-            if (CountNonTerminals(alpha) == 1 && CountTerminals(alpha) == 0)
-            {
-                return true;
-            }
-            return false;
-        }
-
-        // Функция проверки заданной левой части и правой на 2 тип (Контекстно зависимые грамматики)
-        private bool isContextSensitive(string alpha, string beta)
-        {
-            if (CountNonTerminals(alpha) == 1)
-            {
-                var index = FindNonTerminal(alpha);
-                if (index != 0 && index != alpha.Length - 1)
-                {
-                    //foreach (var b in beta)
-                        if (CountNonTerminals(beta) == 1) 
-                            return false;
-
-                    return true;
-                }
-
-
-            }
-            return false;
-        }
-
         private bool ValidGrammatic(string rules)
         {
             string data = rules
@@ -283,31 +54,20 @@ namespace FormalLang
                 .Replace("=", String.Empty)
                 .Replace("|", String.Empty);
 
-            var nonTerminals = GetNonTerminals();
-            var terminals = GetTerminals();
+            var nonTerminals = TypeDetector.nonTerminals;
+            var terminals = TypeDetector.terminals;
 
             foreach (var el in data)
             {
-                if (!nonTerminals.Contains(el) && !terminals.Contains(el)) return false;
+                if (!nonTerminals.Contains(el) && !terminals.Contains(el)) 
+                    return false;
             }
             return true;
-        }
-
-        private bool ValidLanguage(List<string> alphas, List<string> startChains)
-        {
-            foreach (var startChaine in startChains) {
-                alphas.Remove(GetStartNonTerminal().ToString()); // Удаляем нетерминальный символ
-                foreach (var leftN in alphas)
-                {
-                    if (startChaine.Contains(leftN)) return true;
-                }
-            }
-            return false;
         }
         
         private bool ValidLanguageM(List<(string L, string R)> rules)
         {
-            SortedSet<char> terminals = new SortedSet<char>(GetTerminals());
+            SortedSet<char> terminals = new SortedSet<char>(TypeDetector.terminals);
             SortedSet<char> N = new SortedSet<char>();
             SortedSet<char> tempN = new SortedSet<char>();
 
@@ -331,8 +91,28 @@ namespace FormalLang
                 tempN = N;
             }
 
-            if (N.Contains(GetStartNonTerminal())) return true;
+            if (N.Contains(RulesConverter.startNonTerminal)) return true;
             else return false;    
+        }
+
+        private string GetResult(int type)
+        {
+            if (type == 3)
+            {
+                return "регулярная";
+            }
+            else if (type == 2)
+            {
+                return "контекстно свободная";
+            }
+            else if (type == 1)
+            {
+                return "контекстно зависимая";
+            }
+            else
+            {
+                return "типа ноль";
+            }
         }
 
         List<(string L, string R)> updatableRules = new List<(string L, string R)>(); // обновляемый список правил
@@ -340,25 +120,17 @@ namespace FormalLang
         bool autoDetectSymbols = true;
         private void ParseRules()
         {
-            //var s = rules.Items[0];
-            //var t = s as TextBox;
-
-            
+            TypeDetector.LoadFields(terminalsInput.Text + RulesConverter.eps, notterminalsInput.Text);
 
             try
             {
                 hasTremsChain = false;
 
-                //List<string> alphas = new List<string>();
-                //List<string> startChains = new List<string>();
-
                 if (autoDetectSymbols) ClearSymbolInputs();
 
                 updatableRules.Clear();
 
-                //Reset();
                 var rulesText = rulesInput.Text;
-
 
                 var lines = rulesText.Split("\n");
                 foreach (var line in lines)
@@ -370,9 +142,6 @@ namespace FormalLang
                     if (rule[1].Contains("|")) beta = rule[1].Split("|");
                     else beta = new string[] { rule[1] };
 
-                    //if (alpha == GetStartNonTerminal().ToString()) startChains.AddRange(beta);
-                    //alphas.Add(alpha);
-
                     if (autoDetectSymbols)
                     {
                         DectectAndSetSymbols(alpha);
@@ -380,24 +149,22 @@ namespace FormalLang
                             DectectAndSetSymbols(right);
                     }
 
-
-                    //DetectType(alpha, beta);
-
                     foreach (var right in beta)
                     {
                         updatableRules.Add((alpha, right));
-                        if (CountTerminals(right) > 0 && CountNonTerminals(right) == 0)
+                        if (TypeDetector.CountTerminals(right) > 0 && TypeDetector.CountNonTerminals(right) == 0)
                         {
                             hasTremsChain = true;
                         }
                     }
                 }
 
-                if (!ValidGrammatic(rulesText)) throw new Exception("ошибка, проверьте символы");
+                if (!ValidGrammatic(rulesText))
+                    throw new Exception("ошибка, проверьте символы");
 
-                var type = DetectType(updatableRules);
+                var type = TypeDetector.DetectType(updatableRules);
 
-                //var type = GetResult();
+                resultBox.Text = GetResult(type);
 
                 if (type == 2 || type == 3)
                 {
@@ -433,7 +200,7 @@ namespace FormalLang
                 }
                 else
                 {
-                    if (!terminalsInput.Text.Contains(c) && c != eps)
+                    if (!terminalsInput.Text.Contains(c) && c != RulesConverter.eps)
                         terminalsInput.Text += c;
                 }
             }
@@ -441,50 +208,7 @@ namespace FormalLang
 
         private void LeftFactorizationRules(object sender, RoutedEventArgs e)
         {
-
-
-            //var data = new List<string> { "kSl", "kSm", "n" };
-
-            var modRules = new List<(string L, string R)>();
-
-            var grouped = GroupRules(updatableRules);
-
-            foreach(var rule in grouped)
-            {
-                var L = rule.Key;
-                var matchesStrings = PrefixDetector.Detect(rule.Value, true);
-                foreach (var math in matchesStrings)
-                {
-                    //формируем старое правило без новых штук
-
-                    if (math.Value.Count < 2) 
-                    {
-                        var newR = math.Key;
-                        modRules.Add((L, newR));
-                        continue;
-                    }
-
-                    // формируем отдельное правило 
-                    var newL = Alphabet.GetRandom(GetNonTerminals()).ToString();   
-                    foreach(var part in math.Value)
-                    {
-                        var newR = part.Replace(math.Key, String.Empty);
-                        //if (newR == "") 
-                        //    newR = eps.ToString();
-                        if (newR != "") 
-                            modRules.Add((newL, newR));
-                    }
-
-                    var subR = math.Key;
-                    modRules.Add((L, subR + newL));
-                }
-
-            }
-
-
-            UpdateRulsInput(modRules);
-
-
+            UpdateRulsInput(RulesConverter.LeftFactorizationRules(updatableRules));
         }
 
         /// <summary>
@@ -492,149 +216,21 @@ namespace FormalLang
         /// </summary>
         private void DeleteUselessUnreachableCharacters(object sender, RoutedEventArgs e)
         {
-            //var rightN = new SortedSet<int> { 1,2,3,4 };
-            //var N = new SortedSet<int> { 1,2,3 };
-            //var r = rightN.IsSubsetOf(N);
-            var NGNT = GetNonGeneratingNonTerminals(updatableRules);
-            var UNT = GetUnattainableNonTerminals(updatableRules);
-
-            var newrules = DeleteEquals(updatableRules, NGNT);
-            newrules = DeleteEquals(newrules, UNT);
-
-            UpdateRulsInput(newrules);
+            UpdateRulsInput(RulesConverter.DeleteUselessUnreachableCharacters(updatableRules));
         }
 
         private void EliminateChainRules(object sender, RoutedEventArgs e)
         {
-
-            // Шаг 1
-            var OPNTs = new Dictionary<char, SortedSet<char>>();
-
-            foreach (var rule in updatableRules)
-            {
-                var data = OutputNonTerminals(rule.L[0], updatableRules);
-                if (!OPNTs.ContainsKey(rule.L[0]))
-                    OPNTs.Add(rule.L[0], data);
-                else
-                {
-                    OPNTs[rule.L[0]].UnionWith(data);
-                }
-            }
-
-            // Шаг 2
-            var nonterminals = new SortedSet<char>(GetNonTerminals());
-            var modRules = new List<(string L, string R)>();
-            foreach (var rule in updatableRules)
-            {
-                var symbols = new SortedSet<char>(rule.R);
-                if (!symbols.IsSubsetOf(nonterminals))
-                {
-                    foreach(var nonTerm in OPNTs)
-                    {
-                        if (nonTerm.Value.Contains(rule.L[0]))
-                        {
-                            modRules.Add((nonTerm.Key.ToString(), rule.R));
-                        }
-                    }
-                }
-            }
-
-            UpdateRulsInput(modRules);
+            UpdateRulsInput(RulesConverter.EliminateChainRules(updatableRules));
 
         }
 
-        private SortedSet<char> OutputNonTerminals(char nonTerminal, List<(string L, string R)> rules)
-        {
-            var N = new SortedSet<char>(new char[] { nonTerminal });
-            var nonterminals = new SortedSet<char>(GetNonTerminals());
-            var tempN = new SortedSet<char>();
-
-            while (true)
-            {
-                foreach (var rule in rules)
-                {
-                    var rightNonTerminals = SelectNonTerminals(rule.R);
-                    if (rightNonTerminals.Count > 0)
-                        if (N.Contains(rule.L[0]) && rightNonTerminals.IsSubsetOf(nonterminals))
-                            N.Add(rightNonTerminals.ToList()[0]);
-
-                }
-
-                if (tempN == N)
-                    break;
-
-                tempN = N;
-            }
-
-            //nonterminals.ExceptWith(N);
-
-            return N;
-        }
-
+        /// <summary>
+        /// Удаление эпсилон правил
+        /// </summary>
         private void DeleteEpsRules(object sender, RoutedEventArgs e)
         {
-            var EPR = GetEpsGeneratingNonTerminals(updatableRules);
-
-
-            var newRules = new List<(string L, string R)>();
-            foreach (var rule in updatableRules)
-                if (!rule.R.Contains(eps))
-                    newRules.Add(rule);
-
-            // Шаг 3
-            var modRules = new List<(string L, string R)>(newRules);
-            foreach (var rule in newRules)
-            {
-                var rightNonTerminals = SelectNonTerminals(rule.R);
-
-                if (Contains(rightNonTerminals, EPR))
-                {
-                    //modRules.Add(rule);
-                    var pattern = new Pattern(rule.R, EPR);
-                    var combRules = pattern.Combinate();
-                    int parentIndex = modRules.IndexOf(rule);
-                    modRules.Remove(rule);
-
-                    foreach (var r in combRules)
-                    {
-                        if (r != "")
-                            modRules.Insert(parentIndex, (rule.L, r));
-                        //modRules.Remove(rule);
-                    }
-                }
-            }
-
-            if (EPR.Contains(GetStartNonTerminal()))
-            {
-                var oldStartNonTerminal = startNInput.Text[0];
-                var exceptions = notterminalsInput.Text + startNInput.Text;
-                var newStartNonTerminal = Alphabet.GetRandom(exceptions);
-                notterminalsInput.Text += newStartNonTerminal;
-                startNInput.Text = newStartNonTerminal.ToString();
-
-                modRules.Insert(0, (newStartNonTerminal.ToString(), $"{oldStartNonTerminal} | {eps}"));
-            }
-
-            UpdateRulsInput(modRules);
-
-        }
-
-
-        private Dictionary<string, List<string>> GroupRules(List<(string L, string R)> rules)
-        {
-            var groupedRules = new Dictionary<string, List<string>>();
-            foreach (var r in rules)
-            {
-                if (groupedRules.ContainsKey(r.L))
-                {
-                    groupedRules[r.L].Add(r.R);
-                }
-                else
-                {
-                    groupedRules.Add(r.L, new List<string>(new string[] { r.R }));
-                }
-            }
-            return groupedRules;
+            UpdateRulsInput(RulesConverter.DeleteEpsRules(updatableRules));
         }
 
         /// <summary>
@@ -642,7 +238,7 @@ namespace FormalLang
         /// </summary>
         private void UpdateRulsInput(List<(string L, string R)> newrules)
         {
-            var groupedRules = GroupRules(newrules);
+            var groupedRules = RulesConverter.GroupRules(newrules);
 
             rulesInput.Text = "";
             foreach (var rule in groupedRules)
@@ -658,149 +254,6 @@ namespace FormalLang
 
                 rulesInput.Text += "\n";
             }
-
-
-            //rulesInput.Text = "";
-            //var tempL = '\0';
-            //foreach (var r in newrules)
-            //{
-            //    if (tempL == r.L[0])
-            //    {
-            //        rulesInput.Text += $" | {r.R}";
-            //    }
-            //    else
-            //    {
-            //        if (tempL != '\0') rulesInput.Text += "\n";
-            //        rulesInput.Text += $"{r.L} = {r.R}";
-            //    }
-            //    tempL = r.L[0];
-            //}
-        }
-
-        /// <summary>
-        /// Проверяет, содержится ли в множестве root хотя бы один элемент из множества elements
-        /// </summary>
-        private bool Contains(SortedSet<char> root, SortedSet<char> elements)
-        {
-            foreach(var el in elements)
-                if (root.Contains(el)) return true;
-
-            return false;
-        }
-
-        /// <summary>
-        /// Удаляет правила содержащие указанные нетерминалы
-        /// </summary>
-        private List<(string L, string R)> DeleteEquals(List<(string L, string R)> rules, SortedSet<char> deletingnonterminals)
-        {
-
-            var newRules = new List<(string L, string R)>();
-            foreach (var rule in rules)
-            {
-                var ruleNonTerminals = SelectNonTerminals(rule.L);
-                ruleNonTerminals.UnionWith(SelectNonTerminals(rule.R));
-
-                if (!Contains(ruleNonTerminals, deletingnonterminals))
-                    newRules.Add(rule);
-            }
-            return newRules;
-        }
-
-
-        private SortedSet<char> GetEpsGeneratingNonTerminals(List<(string L, string R)> rules)
-        {
-            var N = new SortedSet<char>();
-            var nonterminals = new SortedSet<char>(GetNonTerminals());
-            var tempN = new SortedSet<char>();
-
-            foreach (var rule in rules)
-                if (rule.R.Contains(eps))
-                    N.Add(rule.L[0]);
-
-            while (true)
-            {
-                foreach(var rule in rules)
-                {
-                    var rightNonTerminals = SelectNonTerminals(rule.R);
-                    if (rightNonTerminals.Count > 0)
-                        if (rightNonTerminals.IsSubsetOf(N))
-                            N.Add(rule.L[0]);
-
-                }
-
-                if (tempN == N)
-                    break;
-
-                tempN = N;
-            }
-
-            //nonterminals.ExceptWith(N);
-
-            return N;
-        }
-
-        /// <summary>
-        /// Находит недостижимые нетерминалы в указанном списке правил
-        /// </summary>
-        private SortedSet<char> GetUnattainableNonTerminals(List<(string L, string R)> rules)
-        {
-            var N = new SortedSet<char> { GetStartNonTerminal() };
-            var nonterminals = new SortedSet<char>(GetNonTerminals());
-            var tempN = new SortedSet<char>();
-
-            while (true)
-            {
-                foreach (var rule in rules)
-                {
-                    var leftNonTerminal = new SortedSet<char> { rule.L[0] };
-                    if (leftNonTerminal.IsSubsetOf(N))
-                        N.UnionWith(SelectNonTerminals(rule.R));
-                }
-
-                if (tempN == N)
-                    break;
-
-                tempN = N;
-            }
-
-            nonterminals.ExceptWith(N);
-
-            return nonterminals;
-        }
-
-        /// <summary>
-        /// Находит непорождающие нетерминалы в указанном списке правил
-        /// </summary>
-        private SortedSet<char> GetNonGeneratingNonTerminals(List<(string L, string R)> rules)
-        {
-            var N = new SortedSet<char>();
-            var nonterminals = new SortedSet<char>(GetNonTerminals());
-            var tempN = new SortedSet<char>();
-
-            foreach (var rule in rules)
-                if (CountNonTerminals(rule.R) == 0)
-                    N.Add(rule.L[0]);
-
-            while (true)
-            {
-                foreach (var rule in rules)
-                {
-                    var rightNonTerminals = SelectNonTerminals(rule.R);
-                    if (rightNonTerminals.Count > 0)
-                        if (rightNonTerminals.IsSubsetOf(N))
-                            N.Add(rule.L[0]);
-                }
-
-                if (tempN == N)
-                    break;
-
-                tempN = N;
-            }
-
-            nonterminals.ExceptWith(N);
-
-            return nonterminals;
-            
         }
 
         private void Rectangle_MouseDown_1(object sender, MouseButtonEventArgs e)
